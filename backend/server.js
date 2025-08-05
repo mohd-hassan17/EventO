@@ -1,16 +1,15 @@
-import express, { urlencoded } from 'express';
+import express from 'express';
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import connect from './src/db/connect.js';
-import fs, { readFileSync } from "node:fs";
+import fs from "node:fs";
 
 dotenv.config()
 
-const port = process.env.PORT || 800
+const port = process.env.PORT || 8000
 
 const app = express();
-
 
 // middleware
 app.use(cors({
@@ -36,9 +35,7 @@ routeFiles.forEach((file) => {
 
 const server = async () => {
     try {
-
         await connect();
-
         app.listen(port, () => {
             console.log(`server is running on ${port}`);
         })
