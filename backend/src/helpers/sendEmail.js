@@ -19,16 +19,17 @@ const sendEmail = async (
   link
 ) => {
   const transporter = nodeMailer.createTransport({
-    service: "Outlook365",
-    host: "smtp.office365.com",
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.USER_EMAIL, //Your Outlook email
-      pass: process.env.EMAIL_PASS, //Your Outlook password
-    },
-  });
-
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
+  auth: {
+    user: process.env.USER_EMAIL, // your Gmail
+    pass: process.env.EMAIL_PASS, // your Gmail app password
+  },
+  tls: {
+    rejectUnauthorized: false,
+  },
+});
   const handlebarsOptions = {
     viewEngine: {
       extName: ".handlebars",

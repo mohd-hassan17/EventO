@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import connect from './src/db/connect.js';
 import fs from "node:fs";
+import errorHandler from './src/helpers/errorhandler.js';
 
 dotenv.config()
 
@@ -20,6 +21,9 @@ app.use(cors({
 app.use(express.json()); //JSON bodies
 app.use(express.urlencoded({ extended: true })); //HTML form data
 app.use(cookieParser()); //	Cookies from headers
+
+app.use(errorHandler);
+
 
 const routeFiles = fs.readdirSync('./src/routes');
 

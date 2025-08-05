@@ -1,5 +1,5 @@
 import express from "express";
-import { getUser, loginUser, logoutUser, registerUser, updateUser, userLoginStatus, verifyEmail } from "../controllers/auth/userController.js";
+import { changePassword, forgotPassword, getUser, loginUser, logoutUser, registerUser, resetPassword, updateUser, userLoginStatus, verifyEmail, verifyUser } from "../controllers/auth/userController.js";
 import { adminMiddleware, creatorMiddleware, protect } from "../middleware/authMiddleware.js";
 import { deleteUser, getAllUsers } from "../controllers/auth/adminController.js";
 
@@ -19,7 +19,15 @@ router.get("/users",protect, creatorMiddleware, getAllUsers);
 
 router.get("/login-status", userLoginStatus);
 
-router.get("/verify-email", protect, verifyEmail)
+router.post("/verify-email", protect, verifyEmail)
+
+router.post("/verify-user/:verificationToken", verifyUser);
+
+router.post("/forgot-password", forgotPassword);
+
+router.post("/reset-password/:resetPasswordToken", resetPassword);
+
+router.patch("/change-password", protect, changePassword);
 
 
 export default router;
