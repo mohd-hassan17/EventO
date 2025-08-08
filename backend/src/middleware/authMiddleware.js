@@ -39,7 +39,7 @@ export const adminMiddleware = asyncHandler(async (req, resizeBy, next) => {
 
 })
 
- export const creatorMiddleware = asyncHandler(async (req, res) => {
+ export const creatorMiddleware = asyncHandler(async (req, res, next) => {
 
     if((req.user && req.user.role === "creator") || (req.user && req.user.role === "admin")){
         next();
@@ -49,7 +49,7 @@ export const adminMiddleware = asyncHandler(async (req, resizeBy, next) => {
 
  })
 
-export const verifiedMiddleware = asyncHandler(async (req, res) => {
+export const verifiedMiddleware = asyncHandler(async (req, res, next) => {
 
     if(req.user && req.user.isVerified){
         next()
