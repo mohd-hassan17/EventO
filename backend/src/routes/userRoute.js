@@ -19,7 +19,7 @@ router.get("/users",protect, creatorMiddleware, getAllUsers);
 
 router.get("/login-status", userLoginStatus);
 
-router.post("/verify-email", protect, verifyEmail)
+router.post("/verify-email", protect, verifyEmail);
 
 router.post("/verify-user/:verificationToken", verifyUser);
 

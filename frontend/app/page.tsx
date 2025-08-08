@@ -1,103 +1,143 @@
-import Image from "next/image";
+'use client'
+
+import { useUserContext } from "@/context/userContext";
+import useRedirect from "@/hooks/useRedirect";
+import { useState } from "react";
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  const [isOpen, setOpen] = useState(false);
+  const { logout, user, handlerUserInput,
+    userState, updateUser, updateState, handleUpdateInput,
+    emailVerification, } = useUserContext();
+
+  const { name, photo, bio, isVerified } = user
+
+  useRedirect("/login");
+  return (
+    <main className="py-[2rem] mx-[10rem]">
+      <header className="flex justify-between">
+        <h1 className="text-[2rem] font-bold">
+          Welcome <span className="text-red-600">{name}</span>
+        </h1>
+        <div className="flex items-center gap-4">
+          <img
+            src={photo}
+            alt={name}
+            className="w-[40px] h-[40px] rounded-full"
+          />
+          {
+            !isVerified && 
+            (<button
+              className="px-4 py-2 bg-blue-500 text-white rounded-md"
+              onClick={emailVerification}
+            >
+              Verify Account
+            </button>)
+          }
+
+
+          <button
+            onClick={logout}
+            className="px-4 py-2 bg-red-600 text-white rounded-md"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            Logout
+          </button>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </header>
+      <section>
+        <p className="text-[#999] text-[2rem] pt-8 pb-5">{bio}</p>
+        <h1>
+          <button
+            onClick={() => setOpen(!isOpen)}
+            className="px-4 py-2 bg-[#2ECC71] text-white rounded-md"
+          >
+            Update Bio
+          </button>
+        </h1>
+
+        {isOpen && (
+          <form onSubmit={(e) => updateUser(e, updateState)}
+            className="mt-14 px-8 py-4 max-w-[520px] w-full rounded-md">
+            <div className="flex flex-col">
+
+              <label htmlFor="bio" className="mb-1 text-[#999]">
+                name
+              </label>
+              <textarea
+                name="name"
+
+                className="px-4 py-3  border-[2px] rounded-md outline-[#2ECC71] text-gray-800"
+                value={updateState.name}
+                onChange={handleUpdateInput("name")}
+              ></textarea>
+
+              <label htmlFor="bio" className="mb-1 text-[#999]">
+                Bio
+              </label>
+              <textarea
+                name="bio"
+                className="px-4 py-3  border-[2px] rounded-md outline-[#2ECC71] text-gray-800"
+                value={updateState.bio}
+                onChange={handleUpdateInput("bio")}
+              ></textarea>
+
+              <label htmlFor="bio" className="mb-1 text-[#999]">
+                photo
+              </label>
+              <textarea
+                name="photo"
+
+                className="px-4 py-3  border-[2px] rounded-md outline-[#2ECC71] text-gray-800"
+                value={updateState.photo}
+                onChange={handleUpdateInput("photo")}
+              ></textarea>
+            </div>
+            <button
+              type="submit"
+              className="mt-4 px-4 py-2  bg-blue-500 text-white rounded-md"
+            >
+              Update Bio
+            </button>
+          </form>
+        )}
+      </section>
+      <div className="mt-4 flex gap-8">
+        <div className="flex-1">
+          {/* <ChangePasswordForm /> */}
+        </div>
+        <div className="flex-1">
+          {user.role === "admin" && (
+            <ul>
+              {/* {allUsers.map( */}
+              {/* (user: any, i: number) => */}
+              user.role !== "admin" && (
+              <li
+                // key={i}
+                className="mb-2 px-2 py-3 border grid grid-cols-4 items-center gap-8 rounded-md"
+              >
+                <img
+                  src={user.photo}
+                  alt={user.name}
+                  className="w-[40px]  h-[40px] rounded-full"
+                />
+                <p>{user.name}</p>
+                <p>{user.bio}</p>
+                <button
+                  className="bg-red-500 text-white p-2 rounded-md"
+                  onClick={() => {
+                    // deleteUser(user._id);
+                  }}
+                >
+                  Delete User
+                </button>
+              </li>
+              )
+              {/* )} */}
+            </ul>
+          )}
+        </div>
+      </div>
+    </main>
   );
 }

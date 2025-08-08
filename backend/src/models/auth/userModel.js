@@ -49,7 +49,7 @@ const UserSchema = new mongoose.Schema(
 
 UserSchema.pre("save", async function (next) {
     if(!this.isModified("password")){
-        return next();
+        return next();  //This is important because you don’t want to re-hash a password every time the document is saved (e.g. when updating username or email).
     }
 
     const salt = await bcrypt.genSalt(10);

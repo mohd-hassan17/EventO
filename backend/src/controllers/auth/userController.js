@@ -173,8 +173,8 @@ export const userLoginStatus = asyncHandler(async (req, res) => {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
         res.status(200).json({ isLoggedIn: true });
+        
     } catch (error) {
         res.status(401).json({ isLoggedIn: false, message: "Invalid or expired token" });
     }

@@ -19,7 +19,7 @@ app.use(cors({
 })); //If your frontend (e.g., running on http://localhost:3000) tries to fetch data from your backend (e.g., http://localhost:5000), the browser will block it unless your backend allows that origin.
 
 app.use(express.json()); //JSON bodies
-app.use(express.urlencoded({ extended: true })); //HTML form data
+app.use(express.urlencoded({ extended: true })); //HTML form data means it can parse nested objects
 app.use(cookieParser()); //	Cookies from headers
 
 app.use(errorHandler);
