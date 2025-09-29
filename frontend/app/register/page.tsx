@@ -5,7 +5,7 @@ const Register = () => {
 
 
   return (
-   <div  className="auth-page w-full h-full flex justify-center items-center">
+   <div  className="">
     <RegisterForm />
    </div>
   );

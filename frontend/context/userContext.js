@@ -41,9 +41,58 @@ export const UserContextProvider = ({ children }) => {
         }))
     }
 
+    const [bookings, setBookings] = useState([]);
+
     useEffect(() => {
         userLoginStatus();
     }, []);
+
+    // booking
+
+    const API_URL = "http://localhost:8000/api/v1/bookings";
+    
+    // change if deployed
+
+  // ✅ Create Booking
+   const createBooking = async (bookingData) => {
+  try {
+    setLoading(true);
+    const { data } = await axios.post(`${serverUrl}/api/v1/bookings`, bookingData);
+    setBookings((prev) => [...prev, data]);
+    toast.success("Booking created successfully ✅");
+    return data;
+  } catch (err) {
+      toast.error(err.response?.data?.error || "Failed to create booking ❌");
+    console.log("Error creating booking:", err.response?.data || err.message);
+
+    // Show API error if available, otherwise generic message
+  } finally {
+    setLoading(false);
+  }
+};
+
+    const getBookings = async () => {
+    try {
+      setLoading(true);
+      const { data } = await axios.get(`${serverUrl}/api/v1/get-bookings`);
+      setBookings(data);
+      return data;
+    } catch (err) {
+      console.error("Error fetching bookings:", err.response?.data || err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteBooking = async (id) => {
+  try {
+    await axios.delete(`${serverUrl}/api/v1/admin/bookings/${id}`, { withCredentials: true });
+    setBookings((prev) => prev.filter((b) => b._id !== id));
+  } catch (err) {
+    console.error("Error deleting booking:", err.response?.data || err.message);
+  }
+};
 
     // register user
     const registerUser = async (e) => {
@@ -69,7 +118,7 @@ export const UserContextProvider = ({ children }) => {
                 password: ""
             })
 
-            router.push('/login')
+            router.push('/')
         } catch (error) {
             console.log("Error registering user", error);
             toast.error(error.response.data.message);
@@ -102,24 +151,37 @@ export const UserContextProvider = ({ children }) => {
     }
 
     // login status
+    // const userLoginStatus = async () => {
+    //     let loggedIn = false;
+    //     try {
+    //         const res = await axios.get(`${serverUrl}/api/v1/login-status`, {
+    //             withCredentials: true
+    //         });
+
+    //         loggedIn = !!res.data;
+    //         setLoading(false)
+
+    //         if (!loggedIn) {
+    //             router.push('/login')
+    //         }
+    //     } catch (error) {
+    //         console.log("Error getting user login status", error);
+    //     }
+    //     return loggedIn;
+    // }
+
     const userLoginStatus = async () => {
-        let loggedIn = false;
-        try {
-            const res = await axios.get(`${serverUrl}/api/v1/login-status`, {
-                withCredentials: true
-            });
+  try {
+    const res = await axios.get(`${serverUrl}/api/v1/login-status`, {
+      withCredentials: true,
+    });
 
-            loggedIn = !!res.data;
-            setLoading(false)
-
-            if (!loggedIn) {
-                router.push('/login')
-            }
-        } catch (error) {
-            console.log("Error getting user login status", error);
-        }
-        return loggedIn;
-    }
+    return !!res.data; // true if logged in, false if not
+  } catch (error) {
+    console.log("Error getting user login status", error);
+    return false;
+  }
+};
 
     // logout user
     const logout = async () => {
@@ -268,7 +330,8 @@ export const UserContextProvider = ({ children }) => {
 
     useEffect(() => {
         if (user.role === 'admin') {
-            getAllUsers()
+            getAllUsers();
+            getBookings();
         }
     }, [user.role]);
 
@@ -303,8 +366,12 @@ export const UserContextProvider = ({ children }) => {
             forgotPasswordEmail,
             resetPassword,
             allUsers,
-            deleteUser
-
+            deleteUser,
+            bookings,
+            createBooking,
+            getBookings,
+            loading,
+            deleteBooking
         }}>
             {children}
         </UserContext.Provider>
